@@ -1,0 +1,33 @@
+{% extends 'html/base.html' %}
+{% block title %}Загрузка файлов{% endblock %}
+
+{% block content %}
+
+    <style>
+        a {
+            text-decoration: none;
+            display: inline-block;
+            margin: 10px;
+        }
+    </style>
+    <br>
+    <br>
+    <div class="registration-cssave">
+        <form id="signin" method="" action="" autocomplete="off">
+            <h3 class="text-center">Мои файлы</h3>
+            {% for i in data %}
+                <a class="btn btn-primary btn-block create-account" id="myfiles" href="{{ i.file.url }}">Файл
+                    № {{ i.pk }}</a>
+                <br>
+            {% endfor %}
+            <a href="http://127.0.0.1:8000/file/">
+                <div class="button1">
+                    <button act class="btn btn-primary btn-block create-account" id="button" type="button">Добавить
+                        файл
+                    </button>
+                </div>
+            </a>
+        </form>
+    </div>
+
+{% endblock %}

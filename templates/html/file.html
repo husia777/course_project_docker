@@ -1,0 +1,69 @@
+{% extends 'html/base.html' %}
+{% block title %}Загрузка файлов{% endblock %}
+
+{% block content %}
+    <style>
+
+        #id_file {
+            background-color: #3f93ff;;
+            color: #3f93ff;
+        }
+
+        #signin > p > label {
+            color: #3f93ff;
+        }
+
+        input[type=file]::file-selector-button {
+            margin-right: 20px;
+            border: none;
+            background: #084cdf;
+            padding: 10px 20px;
+            border-radius: 10px;
+            color: #fff;
+            cursor: pointer;
+            transition: background .2s ease-in-out;
+        }
+
+        input[type=file]::file-selector-button:hover {
+            background: #0d45a5;
+        }
+
+
+        .registration-cssave p {
+            border-radius: 30px;
+            padding: 10px 20px;
+            font-size: 18px;
+            font-weight: bold;
+            background-color: #3f93ff;
+            border: none;
+            color: white;
+            margin-top: 20px;
+        }
+
+        #button {
+            box-shadow: 0 4px 15px 0 rgba(65, 132, 234, 0.75);
+        }
+    </style>
+
+    {% for i in data %}
+        {{ i }}
+    {% endfor %}
+    <div class="registration-cssave">
+        <form enctype="multipart/form-data" id="signin" method="post" >
+            <h3 class="text-center">Загрузить файл</h3>
+            {% csrf_token %}
+            {{ form.as_p }}
+            <div class="button1">
+                <button class="btn btn-primary btn-block create-account" id="button" type="submit">Загрузить файл
+                </button>
+            </div>
+            <a href="http://127.0.0.1:8000/home/">
+                <div class="button1">
+                    <button act class="btn btn-primary btn-block create-account" id="button" type="button">Просмотреть
+                        мои файлы
+                    </button>
+                </div>
+            </a>
+        </form>
+    </div>
+{% endblock %}

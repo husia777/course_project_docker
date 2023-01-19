@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Nice dark sign in form</title>
+
+
+</head>
+<style type="text/css">
+
+    .form-group {
+        text-align: center;
+        display: flex;
+        padding: .5em;
+    }
+
+
+    .text-center {
+        font-family: "Bitstream Vera Sans Mono", Monaco, "Courier New", Courier, monospace;
+        text-align: center;
+        color: black;
+        font-size: 30px;
+        box-shadow: 3px 3px dodgerblue;
+    }
+
+    input {
+        justify-content: center;
+        padding: 10px;
+        border-radius: 10px;
+    }
+
+    .registration-cssave {
+
+        color: #212529;
+        background-color: #fff;
+        border-color: #bdbdbd;
+        outline: 0;
+        box-shadow: 0 0 0 0.2rem rgba(158, 158, 158, 0.25);
+    }
+
+    html {
+        background-color: #214c84;
+        background-blend-mode: overlay;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-repeat: no-repeat;
+        background-size: cover;
+        height: 100%;
+    }
+
+    body {
+        background-color: transparent;
+    }
+
+    .registration-cssave {
+        padding: 50px 0;
+    }
+
+    .registration-cssave form {
+        max-width: 800px;
+        padding: 50px 70px;
+        border-radius: 10px;
+        box-shadow: 4px 4px 15px rgba(0, 0, 0, 0.2);
+        background-color: #fff;
+    }
+
+    .registration-cssave form h3 {
+        font-weight: bold;
+        margin-bottom: 30px;
+    }
+
+    .registration-cssave .item {
+        border-radius: 10px;
+        margin-bottom: 25px;
+        padding: 10px 20px;
+    }
+
+    .registration-cssave .create-account {
+        border-radius: 30px;
+        padding: 10px 20px;
+        font-size: 18px;
+        font-weight: bold;
+        background-color: #3f93ff;
+        border: none;
+        color: white;
+        margin-top: 20px;
+    }
+
+    @media (max-width: 576px) {
+        .registration-cssave form {
+            padding: 50px 20px;
+        }
+    }
+
+</style>
+
+<body>
+{% block content %}
+    <div class="registration-cssave">
+        <form id="signin" method="post" action="" autocomplete="off">
+            <h3 class="text-center">Войти</h3>
+            {% csrf_token %}
+            {{ form.as_p }}
+
+            <div class="form-group">
+                <button class="btn btn-primary btn-block create-account" id="button" type="submit">Зарегистрироваться
+                </button>
+            </div>
+        </form>
+    </div>
+{% endblock %}
+
+</body>
+</html>

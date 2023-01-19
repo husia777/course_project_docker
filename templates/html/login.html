@@ -1,0 +1,14 @@
+{% extends 'html/base.html' %}
+{% block content %}
+<div class="registration-cssave">
+    <form id="signin" method="post" action="" autocomplete="off">
+        <h3 class="text-center">Форма входа</h3>
+        {% csrf_token %}
+        {{ form.as_p }}
+
+        <div class="form-group">
+            <button class="btn btn-primary btn-block create-account" id="button" type="submit">Вход в аккаунт</button>
+        </div>
+    </form>
+</div>
+{% endblock %}
