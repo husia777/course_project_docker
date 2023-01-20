@@ -3,7 +3,7 @@ from config.settings import BASE_DIR
 
 operation_number = 0
 
-dict_emails_and_files = dict()
+list_emails_and_files = []
 
 
 def check_and_write_result_to_file(filename, email, operation_num):
@@ -12,6 +12,5 @@ def check_and_write_result_to_file(filename, email, operation_num):
     path_to_result = os.path.join(BASE_DIR, "result")
     path_to_result = os.path.join(path_to_result, f"{operation_num}.txt")
     os.system(f" flake8 {path} > {path_to_result}")
-    dict_emails_and_files[email] = path_to_result
-    print(dict_emails_and_files)
-
+    list_emails_and_files.append((email, path_to_result))
+    print(list_emails_and_files)
