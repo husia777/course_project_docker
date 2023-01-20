@@ -1,28 +1,16 @@
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.views import LoginView, LogoutView
-from django.core.files.storage import FileSystemStorage
-from django.http import HttpResponse, HttpResponseRedirect
-from django.urls import reverse_lazy, reverse
+from django.urls import reverse_lazy
 from django.views.generic import CreateView, ListView
 
 from app.forms import AuthUserForm, RegisterUserForm, UploadFile
 from app.models import User, File
 from django.shortcuts import render, redirect
 
-
-# def upload_file(request):
-#     if request.method == "POST" and request.user.is_authenticated:
-#         form = UploadFile(request.POST, request.FILES)
-#         if form.is_valid():
-#             candidate = form.save(
-#                 commit=False)  # это нужно чтобы объект в модели создался, но зависимости пока не проверялись
-#             candidate.user_id = request.user
-#             print(request.user.id)
-#             candidate.save()
-#             return HttpResponseRedirect(reverse("file"))
+from app.services import check_and_write_result_to_file, dict_emails_and_files
 
 
-def upload_file(request):
+def upload_and_check_file(request):
     if request.method == 'POST':
         form = UploadFile(request.POST, request.FILES)
         if form.is_valid():
@@ -30,12 +18,17 @@ def upload_file(request):
             file.user_id = request.user
             file.file = form.cleaned_data["file"]
             file.save()
+            # dict_emails_and_files[f]
+            email = request.user
+            check_and_write_result_to_file(str(file.file))
+
             return redirect('home')
     else:
         form = UploadFile()
     return render(request, 'html/file.html', {
         'form': form
     })
+
 
 class FileListView(ListView):
     model = File
@@ -52,7 +45,7 @@ class MyprojectLoginView(LoginView):
     form_class = AuthUserForm
 
     def get_success_url(self):
-        self.success_url = f'http://127.0.0.1:8000/home/'
+        self.success_url = 'http://127.0.0.1:8000/home/'
         return self.success_url
 
 

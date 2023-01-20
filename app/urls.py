@@ -8,5 +8,5 @@ urlpatterns = [
     path('register/', views.RegisterUserView.as_view(), name='register_page'),
     path('logout/', views.MyProjectLogout.as_view(), name='logout_page'),
     path('home/', views.FileListView.as_view(), name='home'),
-    path('file/', views.upload_file, name='file'),
+    path('file/', views.upload_and_check_file, name='file'),
     ]

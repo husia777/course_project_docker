@@ -11,4 +11,4 @@ class User(AbstractUser):
 
 class File(models.Model):
     user_id = models.ForeignKey('User', on_delete=models.CASCADE)
-    file = models.FileField(upload_to=f'user_files/')
+    file = models.FileField(upload_to='user_files/')

@@ -1,0 +1,59 @@
+version: "3.9"
+
+services:
+
+  redis:
+    image: redis
+    restart: always
+    hostname: redis
+
+  webapp:
+    restart: always
+    build:
+      context: ./app
+    ports:
+      - "8000:8000"
+    command: [ "python3", "./app/manage.py", "runserver", "0.0.0.0:8000" ]
+    depends_on:
+      - postgres
+
+  worker:
+    restart: always
+    hostname: worker
+    build:
+      context: ./app
+    entrypoint: celery
+    command: -A celery_app.app worker --loglevel=info
+    depends_on:
+      - redis
+    links:
+      - redis
+
+  celery-beats:
+    restart: always
+    build:
+      context: ./webapp
+    command: [ 'celery', '--workdir=./app', '-A', 'proj', 'beat', '-l', 'INFO', '--scheduler', 'django_celery_beat.schedulers:DatabaseScheduler' ]
+
+  postgres:
+    image: postgres
+    ports:
+      - '5433:5432'
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: postgres
+      restart: always
+
+  flower:
+    build:
+      context: .
+    hostname: flower
+    entrypoint: celery
+    command: -A celery_app.app flower
+    links:
+      - redis
+    depends_on:
+      - redis
+    ports:
+      - '5555:5555'

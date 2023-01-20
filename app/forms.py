@@ -1,7 +1,8 @@
 from django.contrib.auth.forms import AuthenticationForm
 from django import forms
+from django.core.validators import FileExtensionValidator
 
-from app.models import User, File
+from app.models import User
 
 
 class AuthUserForm(AuthenticationForm, forms.ModelForm):
@@ -35,8 +36,7 @@ class RegisterUserForm(forms.ModelForm):
 
 
 class UploadFile(forms.Form):
-    # user_id = forms.IntegerField(label='Your ID')
-    file = forms.FileField()
+    file = forms.FileField(validators=[FileExtensionValidator(allowed_extensions=['py'])])
 
     def __init__(self, *args, **kwargs):
         super(UploadFile, self).__init__(*args, **kwargs)
