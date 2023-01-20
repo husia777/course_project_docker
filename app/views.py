@@ -7,7 +7,7 @@ from app.forms import AuthUserForm, RegisterUserForm, UploadFile
 from app.models import User, File
 from django.shortcuts import render, redirect
 
-from app.services import check_and_write_result_to_file, dict_emails_and_files
+from app.services import check_and_write_result_to_file, operation_number
 
 
 def upload_and_check_file(request):
@@ -18,10 +18,10 @@ def upload_and_check_file(request):
             file.user_id = request.user
             file.file = form.cleaned_data["file"]
             file.save()
-            # dict_emails_and_files[f]
-            email = request.user
-            check_and_write_result_to_file(str(file.file))
-
+            email = request.user.username
+            global operation_number
+            check_and_write_result_to_file(str(file.file), email, operation_number)
+            operation_number += 1
             return redirect('home')
     else:
         form = UploadFile()
