@@ -5,15 +5,8 @@ from app.services import list_emails_and_files
 from config.settings import EMAIL_HOST_USER, BASE_DIR
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'config.settings')
-
-# send_mail(
-#     'Email Subject here',
-#     'Email content',
-#     EMAIL_HOST_USER,
-#     ['huseinnaimov@bk.ru'])
-
-msg = EmailMessage('Subject of the Email', 'Body of the email', EMAIL_HOST_USER, ['huseinnaimov@bk.ru'])
-msg.content_subtype = "html"
-print(list_emails_and_files)
-msg.attach_file('/media/user_files/main.py')
-msg.send()
+for i in range(len(list_emails_and_files)):
+    msg = EmailMessage('Subject of the Email', 'Body of the email', EMAIL_HOST_USER, [list_emails_and_files[i][0]])
+    msg.content_subtype = "html"
+    msg.attach_file(list_emails_and_files[i][1])
+    msg.send()
