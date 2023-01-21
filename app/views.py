@@ -71,7 +71,7 @@ class MyProjectLogout(LogoutView):
 
 
 def check_all_files(request):
-    checked_files = File.objects.filter(user_id=request.user.id)
+    checked_files = File.objects.filter(user_id=request.user.id, status='Ждет проверки')
     for i in checked_files:
         i.status = 'Проверяется'
         i.save()
