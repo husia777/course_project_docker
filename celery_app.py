@@ -1,23 +1,19 @@
 import os
-from django.core.mail import send_mail
 
+from django.core.mail import EmailMessage
+from app.services import list_emails_and_files
+from config.settings import EMAIL_HOST_USER, BASE_DIR
 
-# from celery import Celery
-# from django.conf import settings
-#
-# os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'service_settings')
-#
-# app = Celery('service')
-# app.config_from_object('django.conf:settings')
-# app.conf.broker_url = settings.CELERY_BROKER_URL
-# app.autodiscover_tasks()
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'config.settings')
 
+# send_mail(
+#     'Email Subject here',
+#     'Email content',
+#     EMAIL_HOST_USER,
+#     ['huseinnaimov@bk.ru'])
 
-# @app.task()
-def send_result(email, filename):
-    send_mail(email, filename,
-              'admin@example.com',
-              ['admin@example.com'])
-
-
-send_result('naimovsarif411@gmail.com', 'sdfsdfds')
+msg = EmailMessage('Subject of the Email', 'Body of the email', EMAIL_HOST_USER, ['huseinnaimov@bk.ru'])
+msg.content_subtype = "html"
+print(list_emails_and_files)
+msg.attach_file('/media/user_files/main.py')
+msg.send()
