@@ -1,6 +1,7 @@
 from django.urls import path
 
 from app import views
+from app.tasks import send_all_result_to_mail
 
 urlpatterns = [
 
@@ -9,4 +10,5 @@ urlpatterns = [
     path('logout/', views.MyProjectLogout.as_view(), name='logout_page'),
     path('home/', views.FileListView.as_view(), name='home'),
     path('file/', views.upload_and_check_file, name='file'),
+    path('upload/all/', views.check_all_files, name='all'),
     ]

@@ -8,6 +8,7 @@ from app.models import User, File
 from django.shortcuts import render, redirect
 
 from app.services import check_and_write_result_to_file, operation_number
+from app.tasks import send_all_result_to_mail
 
 
 def upload_and_check_file(request):
@@ -67,3 +68,20 @@ class RegisterUserView(CreateView):
 
 class MyProjectLogout(LogoutView):
     next_page = reverse_lazy('login_page')
+
+
+def check_all_files(request):
+    checked_files = File.objects.filter(user_id=request.user.id)
+    for i in checked_files:
+        i.status = 'Проверяется'
+        i.save()
+    send_all_result_to_mail.delay()
+    try:
+        for i in checked_files:
+            i.status = 'Готов'
+            i.save()
+    except:
+        for i in checked_files:
+            i.status = 'Завершен с ошибкой'
+            i.save()
+    return redirect('home')

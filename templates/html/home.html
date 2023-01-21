@@ -18,12 +18,21 @@
             {% for i in data %}
                 <a class="btn btn-primary btn-block create-account" id="myfiles" href="{{ i.file.url }}">Файл
                     № {{ i.pk }}</a>
+                <a class="btn btn-primary btn-block create-account" id="myfiles"
+                   href="http://127.0.0.1:8000/home/">  {{ i.status }}</a>
                 <br>
             {% endfor %}
             <a href="http://127.0.0.1:8000/file/">
                 <div class="button1">
                     <button act class="btn btn-primary btn-block create-account" id="button" type="button">Добавить
                         файл
+                    </button>
+                </div>
+            </a>
+            <a href="http://127.0.0.1:8000/upload/all/">
+                <div class="button1">
+                    <button act class="btn btn-primary btn-block create-account" id="button" type="button">Обработать
+                        все файлы
                     </button>
                 </div>
             </a>
