@@ -4,8 +4,12 @@ RUN apt-get upgrade -y
 
 WORKDIR /app
 
-COPY ./requirements.txt ./
+COPY . .
+RUN pip freeze > requirements.txt
+RUN /usr/local/bin/python -m pip install --upgrade pip
 RUN pip install -r requirements.txt
-COPY ./app ./app
 
-CMD [ "python3", "./app/manage.py", "runserver", "0.0.0.0:8000"]
+CMD [ "python3", "manage.py", "makemigrations", "app"]
+CMD [ "python3", "manage.py", "migrate"]
+CMD [ "python3", "manage.py", "runserver", "0.0.0.0:8000"]
+
