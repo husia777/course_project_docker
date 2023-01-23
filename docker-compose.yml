@@ -30,9 +30,7 @@ services:
     restart: always
     build:
       context: ./app
-    ports:
-      - "8000:8000"
-    command: [ "python3", "./manage.py", "runserver", "0.0.0.0:8000" ]
+    command: [ "python", "./manage.py", "runserver", "0.0.0.0:8000" ]
     links:
       - redis
       - postgres
@@ -46,29 +44,32 @@ services:
   worker:
 
     restart: always
-    build: ./app
-    command: [ 'celery', '-A', './config', 'worker', '-l', 'INFO' ]
+    image: celery
+    command: ['celery', '-A', 'config', 'worker', '-l', 'info']
+
     container_name: celery
+    links:
+      - redis
     depends_on:
       - webapp
       - redis
       - postgres
 
-  celery_beat:
-    build: ./app
-    hostname: celery_beat
-    container_name: celery_beat
-    restart: on-failure
-    command: [ 'celery', '--workdir=./config', '-A', 'config', 'beat', '-l', 'INFO', '--scheduler', 'django_celery_beat.schedulers:DatabaseScheduler' ]
-    links:
-      - worker
-      - redis
-      - postgres
-    depends_on:
-      - worker
-      - redis
-    networks:
-      - main
+#  celery_beat:
+#    build: ./app
+#    hostname: celery_beat
+#    container_name: celery_beat
+#    restart: on-failure
+#    command: [ 'celery', '--workdir=./config', '-A', 'config', 'beat', '-l', 'INFO', '--scheduler', 'django_celery_beat.schedulers:DatabaseScheduler' ]
+#    links:
+#      - worker
+#      - redis
+#      - postgres
+#    depends_on:
+#      - worker
+#      - redis
+#    networks:
+#      - main
 
 
 
