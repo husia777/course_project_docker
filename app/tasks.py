@@ -19,8 +19,7 @@ def send_all_result_to_mail(*args, **kwargs):
         # send_mail('Subject of the Email', 'Body of 123 email', EMAIL_HOST_USER, [list_emails_and_files[i][0]])
         msg = EmailMessage('Subject of the Email', 'Body of 123 email', EMAIL_HOST_USER, [list_emails_and_files[i][0]])
         msg.content_subtype = "html"
-        msg.attach('0.txt')
+        msg.attach(list_emails_and_files[i][1]) # полный путь
         msg.send()
         list_emails_and_files.clear()
     return
-
