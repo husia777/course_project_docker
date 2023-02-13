@@ -13,7 +13,6 @@ services:
     ports:
       - '5433:5432'
     environment:
-      - POSTGRES_HOST=localhost
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
       - POSTGRES_DB=postgres
@@ -36,11 +35,9 @@ services:
       - ./:/app
 
     environment:
-      - POSTGRES_HOST=postgres
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
       - POSTGRES_DB=postgres
-      - POSTGRES_PORT=5432
     command:
       sh -c "python ./manage.py makemigrations && python ./manage.py makemigrations app && python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
     ports:
@@ -58,11 +55,9 @@ services:
       - ./:/app
     command: [ 'celery',  '-A', 'config', 'worker', '-l' ,'INFO' ]
     environment:
-      - POSTGRES_HOST=postgres
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
       - POSTGRES_DB=postgres
-      - POSTGRES_PORT=5432
     depends_on:
       - postgres
       - app

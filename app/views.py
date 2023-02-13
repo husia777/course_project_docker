@@ -7,7 +7,7 @@ from app.forms import AuthUserForm, RegisterUserForm, UploadFile
 from app.models import User, File
 from django.shortcuts import render, redirect
 
-from app.services import check_and_write_result_to_file, operation_number
+from app.services import check_and_write_result_to_file
 from app.tasks import send_all_result_to_mail
 
 
