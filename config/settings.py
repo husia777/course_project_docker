@@ -140,6 +140,7 @@ EMAIL_USE_TLS = False
 EMAIL_USE_SSL = True
 EMAIL_HOST_USER = 'naimoffh@yandex.ru'
 EMAIL_HOST_PASSWORD = 'zkcyseohujejfooe'
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 
 # EMAIL_HOST = 'smtp.mail.ru'
 # EMAIL_PORT = 2525

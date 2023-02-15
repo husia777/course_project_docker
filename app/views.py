@@ -1,13 +1,16 @@
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, get_user_model
 from django.contrib.auth.views import LoginView, LogoutView
 from django.urls import reverse_lazy
-from django.views.generic import CreateView, ListView
-
-from app.forms import AuthUserForm, RegisterUserForm, UploadFile
+from django.views.generic import CreateView, ListView, View
+from django.utils.http import urlsafe_base64_decode
+from django.contrib.auth.tokens import default_token_generator as \
+    token_generator
+from app.forms import AuthUserForm, RegisterUserForm, UploadFile, AuthForm, UserCreateForm
 from app.models import User, File
 from django.shortcuts import render, redirect
+from django.core.exceptions import ValidationError
 
-from app.services import check_and_write_result_to_file
+from app.services import check_and_write_result_to_file, send_email_for_verify
 from app.tasks import send_all_result_to_mail
 
 
@@ -29,7 +32,32 @@ def upload_and_check_file(request):
     return render(request, 'html/file.html', {
         'form': form
     })
+User = get_user_model()
 
+
+class EmailVerify(View):
+    
+    def get(self, request, uidb64, token):
+        user = self.get_user(uidb64)
+
+        if user is not None and token_generator.check_token(user, token):
+            user.email_verify = True
+            user.save()
+            login(request, user)
+            return redirect('home')
+        return redirect('invalid_verify')
+
+    @staticmethod
+    def get_user(uidb64):
+        try:
+            # urlsafe_base64_decode() decodes to bytestring
+            uid = urlsafe_base64_decode(uidb64).decode()
+            user = User.objects.get(pk=uid)
+        except (TypeError, ValueError, OverflowError,
+                User.DoesNotExist, ValidationError):
+            user = None
+        return user
+    
 
 class FileListView(ListView):
     model = File
@@ -40,30 +68,60 @@ class FileListView(ListView):
         data['data'] = File.objects.filter(user_id=self.request.user.id)
         return data
 
+class MyLoginView(LoginView):
+    template_name = 'html/login.html'
+    form_class = AuthForm
 
 class MyprojectLoginView(LoginView):
     template_name = 'html/login.html'
-    form_class = AuthUserForm
+    form_class = AuthForm
 
     def get_success_url(self):
         self.success_url = 'http://127.0.0.1:8000/home/'
         return self.success_url
 
 
-class RegisterUserView(CreateView):
-    model = User
+class RegisterUserView(View):
     template_name = 'html/register.html'
-    form_class = RegisterUserForm
-    success_url = reverse_lazy('login_page')
-    success_msg = 'Пользователь успешно создан'
+    def get(self, request):
+        context = {
+            'form': UserCreateForm()
+        }
+        return render(request, self.template_name, context)
+    
 
-    def form_valid(self, form):
-        form_valid = super().form_valid(form)
-        username = form.cleaned_data["username"]
-        password = form.cleaned_data["password"]
-        aut_user = authenticate(username=username, password=password)
-        login(self.request, aut_user)
-        return form_valid
+    def post(self, request):
+        form = UserCreateForm(request.POST)
+        if form.is_valid():
+            form.save()
+            username = form.cleaned_data["username"]
+            password = form.cleaned_data["password"]
+            aut_user = authenticate(username=username, password=password)
+            send_email_for_verify(request, aut_user)
+            return redirect('confirm_email')
+        context = {
+                'form': form
+            }
+        return render(request, self.template_name, context)
+
+# class RegisterUserView(View):
+#     model = User
+#     template_name = 'html/register.html'
+#     form_class = RegisterUserForm
+#     success_url = reverse_lazy('login_page')
+#     success_msg = 'Пользователь успешно создан'
+
+#     def form_valid(self, request, form):
+#         form_valid = super().form_valid(form)
+#         username = form.cleaned_data["username"]
+#         password = form.cleaned_data["password"]
+#         aut_user = authenticate(username=username, password=password)
+#         send_email_for_verify(request, aut_user)
+#         return redirect('confirm_email')
+#         context
+
+        # login(self.request, aut_user)
+        # return form_valid
 
 
 class MyProjectLogout(LogoutView):

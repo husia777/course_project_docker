@@ -8,7 +8,7 @@ class User(AbstractUser):
     USERNAME_FIELD = 'username'
     EMAIL_FIELD = 'username'
     REQUIRED_FIELDS = []
-
+    email_verify = models.BooleanField(default=False)
 
 class File(models.Model):
     user_id = models.ForeignKey('User', on_delete=models.CASCADE)
